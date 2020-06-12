@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" -->
+<!--             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" -->
+<!--             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" -->
+<!--             xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" -->
+<!--             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" -->
+<!--             expressionLanguage="http://www.w3.org/1999/XPath" id="m1591928062327" name="" -->
+<!--             targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">-->
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+
+  <process id="leaveRequest" isClosed="false" isExecutable="true" name="请假审批" processType="None">
+    <startEvent id="staratEvent_1" name="StartEvent"/>
+
+    <userTask activiti:exclusive="true" id="userTask_1" name="部门经理审批"/>
+
+    <businessRuleTask activiti:exclusive="true" activiti:resultVariable="reason" activiti:ruleVariablesInput="${leave}" activiti:rules="leave1,leave2" id="businessRuleTask_1" name="天数判断"/>
+    <serviceTask activiti:exclusive="true" activiti:class="com.yqq.service.DroolsService" id="serviceTask_1" name="获取变量"/>
+
+    <endEvent id="endEvent_1" name="EndEvent"/>
+
+    <userTask activiti:exclusive="true" id="userTask3" name="总经理审批"/>
+    <userTask activiti:exclusive="true" id="userTask2" name="HR审批"/>
+
+    <sequenceFlow id="_9" sourceRef="staratEvent_1" targetRef="userTask_1"/>
+    <sequenceFlow id="_10" sourceRef="userTask_1" targetRef="businessRuleTask_1"/>
+    <sequenceFlow id="_11" sourceRef="businessRuleTask_1" targetRef="serviceTask_1"/>
+    <sequenceFlow id="_12" sourceRef="serviceTask_1" targetRef="userTask3">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${reason[0].total >= 10}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_13" sourceRef="serviceTask_1" targetRef="userTask2">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${reason[0].total < 10}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_14" sourceRef="userTask2" targetRef="endEvent_1"/>
+
+  </process>
+
+
+
+
+  <signal id="SIG_1" name="singn-name"/>
+  <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="leaveRequest">
+      <bpmndi:BPMNShape bpmnElement="staratEvent_1" id="Shape-staratEvent_1">
+        <omgdc:Bounds height="32.0" width="32.0" x="285.0" y="40.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask_1" id="Shape-userTask_1">
+        <omgdc:Bounds height="55.0" width="85.0" x="260.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="businessRuleTask_1" id="Shape-businessRuleTask_1">
+        <omgdc:Bounds height="55.0" width="85.0" x="260.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask_1" id="Shape-serviceTask_1">
+        <omgdc:Bounds height="55.0" width="85.0" x="265.0" y="365.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent_1" id="Shape-endEvent_1">
+        <omgdc:Bounds height="32.0" width="32.0" x="305.0" y="730.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="Shape-userTask3">
+        <omgdc:Bounds height="55.0" width="85.0" x="160.0" y="490.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="Shape-userTask2">
+        <omgdc:Bounds height="55.0" width="85.0" x="280.0" y="610.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_13" id="BPMNEdge__13" sourceElement="serviceTask_1" targetElement="userTask2">
+        <omgdi:waypoint x="315.0" y="420.0"/>
+        <omgdi:waypoint x="315.0" y="610.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12" id="BPMNEdge__12" sourceElement="serviceTask_1" targetElement="userTask3">
+        <omgdi:waypoint x="265.0" y="392.5"/>
+        <omgdi:waypoint x="245.0" y="517.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_14" id="BPMNEdge__14" sourceElement="userTask2" targetElement="endEvent_1">
+        <omgdi:waypoint x="321.0" y="665.0"/>
+        <omgdi:waypoint x="321.0" y="730.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="staratEvent_1" targetElement="userTask_1">
+        <omgdi:waypoint x="301.0" y="72.0"/>
+        <omgdi:waypoint x="301.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="businessRuleTask_1" targetElement="serviceTask_1">
+        <omgdi:waypoint x="305.0" y="305.0"/>
+        <omgdi:waypoint x="305.0" y="365.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="userTask_1" targetElement="businessRuleTask_1">
+        <omgdi:waypoint x="302.5" y="190.0"/>
+        <omgdi:waypoint x="302.5" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
