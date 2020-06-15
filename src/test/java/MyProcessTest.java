@@ -2,6 +2,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -23,7 +24,7 @@ public class MyProcessTest {
         Deployment deployment = processEngine.getRepositoryService().createDeployment()
                 .addClasspathResource("activiti/my-process.bpmn20.xml").deploy();
 
-        System.out.println("id:"+deployment.getId());
+        System.out.println("id:"+deployment.getId()); //10001
     }
 
 
@@ -44,14 +45,30 @@ public class MyProcessTest {
     //开启流程
     @Test
     public void startProcess() {
+        /**
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        runtimeService.createProcessInstanceQuery().orderByProcessInstanceId()
+        runtimeService.createProcessInstanceQuery().orderByProcessInstanceId();
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("my-process");
-        System.out.println("pid:" + pi.getId() + "activitiId:" + pi.getActivityId());
+        System.out.println("pid:" + pi.getId() + "  activitiId:" + pi.getActivityId());//pid:12501  activitiId:someTask
+        **/
+        TaskService taskService = processEngine.getTaskService();
 
-        List<Task> taskList = processEngine.getTaskService().createTaskQuery().processInstanceId(pi.getId()).list();
-        System.out.println(taskList.size());
+        //当前任务
+        List<Task> taskList = processEngine.getTaskService().createTaskQuery().processInstanceId("12501").list();
+        for (Task task : taskList) {
+            taskService.complete(task.getId());
+            System.out.println("1、完成任务的ID，："+task.getId()+"   任务名称："+task.getName());
+        }
+        //下一步任务
+        taskList = processEngine.getTaskService().createTaskQuery().processInstanceId("12501").list();
+        for (Task task : taskList) {
+            taskService.complete(task.getId());
+            System.out.println("2、完成任务的ID，："+task.getId()+"   任务名称："+task.getName());
+        }
+
+
+
     }
 
     //查看我的任务

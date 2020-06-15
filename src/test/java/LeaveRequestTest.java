@@ -22,24 +22,58 @@ public class LeaveRequestTest {
         TaskService taskService = processEngine.getTaskService();
 
         //发布流程
+
         Deployment deployment = repositoryService.createDeployment()
 //                .addClasspathResource("activiti/leaveRequest.bpmn20.xml")
-                .addClasspathResource("activiti/ppleave.bpmn")
+                .addClasspathResource("activiti/leaveRequest.bpmn20.xml")
                 .addClasspathResource("activiti/leave-request.png")
                 .addClasspathResource("rule/product.drl").deploy();
 
-        System.out.println("发布ID："+deployment.getId());
+        System.out.println("发布ID："+deployment.getId());//17501
 
-//        ProcessInstance pi = runtimeService.startProcessInstanceByKey("leaveRequest");//启动流程
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("leave");//启动流程
+
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("leaveRequest");//启动流程
         Map<String, Object> vars = new HashMap<>();
-        vars.put("leave", new Leave("张三", 1));
+        vars.put("leave", 200);
 
         List<Task> taskList = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
         for (Task task : taskList) {
             System.out.println("正在处理任务：  "+task.getId()+" : "+task.getName());
             taskService.complete(task.getId(),vars);
         }
+
+        taskList = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+        for (Task task : taskList) {
+            System.out.println("正在处理任务：  "+task.getId()+" : "+task.getName());
+            taskService.complete(task.getId(),vars);
+        }
+
+
+//        ProcessInstance pi = runtimeService.startProcessInstanceByKey("leave");//启动流程
+//        System.out.println("processInstance ID:"+pi.getId());//17506
+
+//        String processInstanceID = "17506";
+//        String processInstanceID = pi.getId();
+
+//        Map<String, Object> vars = new HashMap<>();
+//        vars.put("leave", new Leave("张三", 1));
+//        taskService.complete("27514",vars);
+
+
+
+        //当前任务
+//        List<Task> taskList = taskService.createTaskQuery().processInstanceId(processInstanceID).list();
+//        for (Task task : taskList) {
+//            System.out.println("正在处理任务：  "+task.getId()+" : "+task.getName());
+//            taskService.complete(task.getId(),vars);
+//        }
+
+        //下一个任务
+//        taskList = taskService.createTaskQuery().processInstanceId(processInstanceID).list();
+//        for (Task task : taskList) {
+//            System.out.println("正在处理任务：  "+task.getId()+" : "+task.getName());
+//            taskService.complete(task.getId(),vars);
+//        }
 
 
 
